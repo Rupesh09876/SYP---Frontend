@@ -5,7 +5,7 @@ const getBaseURL = () => {
   if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
   const host = window.location.hostname;
   if (host !== 'localhost' && host !== '127.0.0.1') {
-    return `http://${host}:5001/api`;
+    return `https://syp-backend.onrender.com/api`;
   }
   return 'http://localhost:5001/api';
 };
