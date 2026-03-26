@@ -1,13 +1,8 @@
-// frontend/src/pages/admin/AdminDashboard.jsx  (ADD NOTIFICATION to existing)
-// This is a wrapper patch — add notification bell to AdminSidebar/layout
-// The actual full AdminDashboard should have notifications in its header.
-// Since admin pages already exist, we provide a drop-in AdminLayout with notifications.
-
-// frontend/src/components/AdminLayout.jsx — CREATE THIS FILE
+import React from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Users, Calendar, CreditCard, BarChart2, Settings, LogOut, Shield } from 'lucide-react';
-import { useNotifications } from '../hooks/useNotifications';
-import NotificationPanel from './NotificationPanel';
+import { useNotifications } from '../../hooks/useNotifications';
+import NotificationPanel from '../../components/NotificationPanel';
 
 const navItems = [
   { label:'Dashboard', icon:LayoutDashboard, path:'/admin/dashboard' },

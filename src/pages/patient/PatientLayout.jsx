@@ -1,4 +1,4 @@
-// Shared layout wrapper for all patient pages — matches PatientDashboard theme exactly
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Calendar, FileText, Mic,
@@ -9,7 +9,6 @@ import NotificationPanel from '../../components/NotificationPanel';
 import IncomingCallModal from '../../components/IncomingCallModal';
 import CallContainer from '../../components/CallContainer';
 import { ringtone } from '../../utils/ringtone';
-import { useState } from 'react';
 
 const NAV_MAIN = [
   [Calendar, 'Appointments', '/patient/appointments'],
