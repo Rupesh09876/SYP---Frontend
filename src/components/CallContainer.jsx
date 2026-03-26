@@ -48,6 +48,7 @@ export default function CallContainer({ roomID, userID, userName, onLeave, isVid
                     showScreenSharingButton: false,
                     showUserList: false,
                     showPreJoinView: false,
+                    showConsole: false, // Suppress unhelpful internal Zego logs
                     onLeaveRoom: () => {
                         console.log('User left room via Zego');
                         onLeave();

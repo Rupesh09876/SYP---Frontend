@@ -77,7 +77,7 @@ export default function DoctorLayout({ children, activeLabel, activePath }) {
     const [activeCall, setActiveCall] = useState(null);
 
     // Global listener for outgoing calls
-    useState(() => {
+    useEffect(() => {
         const handleStartCall = (e) => {
             console.log('Global call trigger:', e.detail);
             setActiveCall(e.detail);
