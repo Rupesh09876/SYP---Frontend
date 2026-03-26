@@ -13,18 +13,17 @@ export default function CallContainer({ roomID, userID, userName, onLeave, isVid
         const appID = parseInt(import.meta.env.VITE_ZEGO_APP_ID);
         const serverSecret = import.meta.env.VITE_ZEGO_SERVER_SECRET;
 
+        let zpInstance = null;
+
         if (!appID || !serverSecret) {
             console.error('ZEGO APP ID or SERVER SECRET not configured');
-            alert('Calling configuration is missing. Please contact administrator.');
             onLeave();
             return;
         }
 
-        if (zpRef.current) return;
-
         const initCall = async () => {
             try {
-                if (!containerRef.current) return;
+                if (!containerRef.current || !isMounted.current) return;
 
                 const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
                     appID,
@@ -35,6 +34,7 @@ export default function CallContainer({ roomID, userID, userName, onLeave, isVid
                 );
 
                 const zp = ZegoUIKitPrebuilt.create(kitToken);
+                zpInstance = zp;
                 zpRef.current = zp;
 
                 zp.joinRoom({
@@ -49,8 +49,7 @@ export default function CallContainer({ roomID, userID, userName, onLeave, isVid
                     showUserList: false,
                     showPreJoinView: false,
                     onLeaveRoom: () => {
-                        console.log('User left the room');
-                        cleanupZego();
+                        console.log('User left room via Zego');
                         onLeave();
                     },
                     onJoinRoom: () => {
@@ -59,35 +58,28 @@ export default function CallContainer({ roomID, userID, userName, onLeave, isVid
                 });
             } catch (err) {
                 console.error('Zego initialization error:', err);
-                onLeave();
-            }
-        };
-
-        const cleanupZego = () => {
-            if (zpRef.current) {
-                try {
-                    console.log('Destroying Zego instance...');
-                    zpRef.current.destroy();
-                } catch (e) {
-                    console.warn('Silent error during Zego destroy:', e);
-                } finally {
-                    zpRef.current = null;
-                }
+                if (isMounted.current) onLeave();
             }
         };
 
         const timeout = setTimeout(() => {
-            if (containerRef.current && isMounted.current) {
-                initCall();
-            }
-        }, 800);
+            initCall();
+        }, 300);
 
         return () => {
             isMounted.current = false;
             clearTimeout(timeout);
-            cleanupZego();
+            if (zpInstance) {
+                try {
+                    console.log('Destroying Zego instance...');
+                    zpInstance.destroy();
+                } catch (e) {
+                    console.warn('Zego destroy warning:', e);
+                }
+            }
+            zpRef.current = null;
         };
-    }, [roomID, userID, userName]);
+    }, [roomID, userID, userName, isVideoCall]);
 
     return (
         <div style={{
